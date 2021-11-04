@@ -14,6 +14,7 @@ namespace WebApi.Services
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         IEnumerable<User> GetAll();
         User GetById(int id);
+        User GetByUsername(string username);
         void Register(RegisterRequest model);
         void Update(int id, UpdateRequest model);
         void Delete(int id);
@@ -57,6 +58,11 @@ namespace WebApi.Services
         public User GetById(int id)
         {
             return getUser(id);
+        }
+
+        public User GetByUsername(string username)
+        {
+            return getUserbyusername(username);
         }
 
         public void Register(RegisterRequest model)
@@ -106,6 +112,13 @@ namespace WebApi.Services
         private User getUser(int id)
         {
             var user = _context.Users.Find(id);
+            if (user == null) throw new KeyNotFoundException("User not found");
+            return user;
+        }
+
+        private User getUserbyusername(string username)
+        {
+            var user = _context.Users.Where(x=>x.Username == username).FirstOrDefault();
             if (user == null) throw new KeyNotFoundException("User not found");
             return user;
         }

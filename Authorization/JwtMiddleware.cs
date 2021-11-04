@@ -21,13 +21,18 @@ namespace WebApi.Authorization
         public async Task Invoke(HttpContext context, IUserService userService, IJwtUtils jwtUtils)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            var userId = jwtUtils.ValidateToken(token);
-            if (userId != null)
+            //var userId = jwtUtils.ValidateToken(token);
+            //if (userId != null)
+            //{
+            //    // attach user to context on successful jwt validation
+            //    context.Items["User"] = userService.GetById(userId.Value);
+            //}
+            var username = jwtUtils.ValidateTokenByUsername(token);
+            if (username != null)
             {
                 // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId.Value);
+                context.Items["User"] = userService.GetByUsername(username);
             }
-
             await _next(context);
         }
     }
